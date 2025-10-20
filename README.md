@@ -1,53 +1,39 @@
 # InfraStack Demo
 
-A small local infrastructure project combining **Terraform**, **Ansible**, **Docker**, and **Caddy** to deploy a **Java Spring Boot** app with **PostgreSQL** and **Flyway** migrations.
-
-Everything runs locally using the Terraform **Docker provider**, so no cloud or paid server is required.
+Local infrastructure demo using **Terraform**, **Ansible**, **Docker**, and **Caddy** to deploy a **Spring Boot + PostgreSQL + Flyway** stack with **Grafana + Prometheus + Loki** monitoring and logging — all running locally (no cloud needed).
 
 ---
 
-## Stack Overview
+## Stack
 | Layer | Tool | Purpose |
 |-------|------|----------|
-| Infrastructure | Terraform | Provisions Docker containers and network |
-| Configuration | Ansible | Builds and orchestrates containers |
-| Application | Spring Boot | Java backend API |
-| Database | PostgreSQL + Flyway | Persistent data & migrations |
-| Proxy | Caddy | Simple reverse proxy / web entrypoint |
+| Infra | Terraform | Provisions Docker containers & network |
+| Config | Ansible | Orchestrates setup |
+| Backend | Spring Boot | Java API |
+| DB | PostgreSQL + Flyway | Data + migrations |
+| Proxy | Caddy | Reverse proxy |
+| Metrics | Prometheus | Collects metrics |
+| Logs | Loki + Promtail | Centralized container logs |
+| Dashboards | Grafana | Metrics + log visualization |
 
 ---
 
-## How it works
-1. **Terraform** creates:
-   - A Docker network (`infra_network`)
-   - A PostgreSQL container
-   - A Spring Boot container
-   - A Caddy reverse proxy container
-
-2. **Ansible** runs after Terraform to build and start the stack via Docker Compose.
-
-3. **Spring Boot** connects to PostgreSQL with Flyway handling migrations automatically.
-
-4. **Caddy** exposes the app at `http://localhost:8080`.
-
----
-
-## Getting Started
-
-### Requirements
-- Docker & Docker Compose
-- Terraform
-- Ansible
-- Java 25 (Amazon Corretto)
-
-### Run locally
+## Run locally
 ```bash
-# 1. Provision infrastructure
+# 1. Provision infra
 cd terraform
 terraform init
 terraform apply -auto-approve
 
-# 2. Configure and start services
+# 2. Configure + start
 cd ../ansible
 ansible-playbook playbook.yml
+
+# App
+#   Dev  -> http://localhost:8080
+#   Main -> http://localhost:8081
+# Monitoring
+#   Grafana -> http://localhost:3000 (admin / admin)
+#   Prometheus -> http://localhost:9090
+#   Loki logs -> via Grafana Explore
 ```
